@@ -3,9 +3,9 @@
 [![H1Cine](https://raw.githubusercontent.com/dtpln/codcine/main/assets/img/h1cine_new.png 'H1Cine')](https://github.com/dtpln/codcine)
 ### 🎥 A features-rich cinematic mod for Call of Duty : Modern Warfare Remastered
 
-<a href="https://github.com/dtpln/h1cine/releases"><img src="https://img.shields.io/github/v/release/dtpln/h1cine?label=Latest%20release&style=flat-square&color=eecb00"></a>　
-<a href="https://discord.gg/wgRJDJJ"><img src="https://img.shields.io/discord/617736623412740146?label=Join%20the%20IW4Cine%20Discord!&style=flat-square&color=eecb00"></a>　
-<a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/downloads/dtpln/iw3cine/total?color=eecb00&label=Downloads&style=flat-square"></a>
+<a href="https://github.com/dtpln/h1cine/releases"><img src="https://img.shields.io/github/v/release/dtpln/h1cine?label=Latest%20release&style=flat-square&color=#2f5fa9"></a>　
+<a href="https://discord.gg/wgRJDJJ"><img src="https://img.shields.io/discord/617736623412740146?label=Join%20the%20IW4Cine%20Discord!&style=flat-square&color=#2f5fa9"></a>　
+<a href="https://github.com/dtpln/iw3cine/releases/latest"><img src="https://img.shields.io/github/downloads/dtpln/iw3cine/total?color=#2f5fa9&label=Downloads&style=flat-square"></a>
 </div>
 <br/><br/>
 
