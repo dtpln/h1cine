@@ -25,7 +25,7 @@ In order to use the latest version of this mod directly from the repo, you'll ne
 
 Simply download the mod through [this link](https://github.com/dtpln/h1cine/releases/latest). Scroll down and click on "Source code (zip)" to download the archive.
 
-<img src="https://imgur.com/a/i8gi46k" alt="screenshot" height="265px" align="right"/>
+<img src="https://i.imgur.com/rrEpRLB.png" alt="screenshot" height="265px" align="right"/>
 
 Once the mod is downloaded, open the ZIP file and drag the "h1cine" folder into your `MWR/mods` folder. If the `mods` folder doesn't exist, create it. (*You can also rename the mod if you'd like.*)
 
