@@ -33,9 +33,8 @@ registerCommands()
     self thread createCommand( "mvm_bot_kill",      "Kill bot",                             " <bot_name> <body/head/cash>",             scripts\bots::killBot );
     self thread createCommand( "mvm_bot_holdgun",   "Toggle bots holding guns when dying",  " ",                                        scripts\misc::toggle_holding );
     self thread createCommand( "mvm_bot_freeze",    "(Un)freeze bots",                      " ",                                        scripts\misc::toggle_freeze );
-
-    // Actors
-    //self thread createCommand( "actorback",     "Reset all actors to previous state",   " ",                                                        scripts\actors::back );
+    self thread createCommand( "mvm_bot_weapon",    "Give a bot a weapon",                  " <bot_name> <weapon_name> <camo>",         scripts\bots::weapon );
+    //self thread createCommand( "actorback",     "Reset all actors to previous state",   " ",                                                            scripts\actors::back );
     //self thread createCommand( "mvm_actor_anim",    "Set actor's main animation",           " <actor_name> <anim_name>",                                scripts\actors::playanim );
     //self thread createCommand( "mvm_actor_copy",    "Spawn a copy of an existing actor",    " <actor_name>",                                            scripts\actors::copy );
     //self thread createCommand( "mvm_actor_death",   "Set actor's death animation",          " <actor_name> <anim_name>",                                scripts\actors::deathanim );
@@ -54,6 +53,7 @@ registerCommands()
     self thread createCommand( "cam_start",     "Camera start",                         " <speed if bezier, time if linear>",                       scripts\cam::camstartpath,  1 );
     
     //  Debug
+    self thread createCommand( "curWeap", "Shows current weapon", "", scripts\misc::testWeapon );
     self thread createCommand( "mvm_help",      "Get a full list of mod commands.",             " ",                scripts\utils::MsgHelp );
 }
 

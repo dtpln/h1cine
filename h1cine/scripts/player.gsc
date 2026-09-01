@@ -3,9 +3,10 @@
  *      Player-related functions
  */
 
-//#include common_scripts\utility;
+
 #include scripts\utils;
 
+// Ammo Regen
 playerRegenAmmo()
 {
     if(!level.PLAYER_AMMO) return;
@@ -42,6 +43,7 @@ regenEquip()
     }
 }
 
+// Movement Tweaks
 movementTweaks()
 {
     if(!level.PLAYER_MOVEMENT) return;

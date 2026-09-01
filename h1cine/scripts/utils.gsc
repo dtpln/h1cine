@@ -4,13 +4,12 @@
  */
 
 #include common_scripts\utility;
+#include maps\mp\_utility;
+#include defaults;
 
 // Macros
-waitsec()
-{ wait 1; }
-
-skipframe()
-{ waittillframeend; }
+waitsec()   { wait 1; }
+skipframe() { waittillframeend; }
 
 pront( string ) // s/o simon for engraving "iProntLn" in my mind forever; this one is for you
 { foreach ( player in level.players ) player iPrintLn( string );  }
@@ -42,106 +41,7 @@ create_spawn_thread( callback, args )
 }
 
 
-// Weapons-related functions
-camo_int( int )
-{
-    return int( tableLookup( "mp/camoTable.csv", 1, int, 0 ) );
-}
-
-get_offhand_name( item )
-{
-    switch ( item )
-    {
-        case "flash_grenade_mp":
-            return "flash";
-        case "smoke_grenade_mp":
-            return "smoke";
-        case "flare_mp":
-            return "flare";
-        default:
-            return item;
-    }
-}
-
-// Gotta test all weapons and add them if needed
-fake_killfeed_icon( weapon )
-{
-    switch ( weapon )
-    {
-        case "cheytac":
-            return "intervention";
-        case "m4":
-            return "m4a1";
-        case "masada":
-            return "acr";
-        default:
-            return weapon;
-    }
-}
-
-// The mod used to use premade "weapon names" for bots spawns (ew), but now it's using actual weapon names
-// Let's handle the old ones still, because I can already hear people losing their god damned mind after all this time
-// Can also be used to make "shortcuts" if you're lazy like me hehe
-legacy_classnames( weapon )
-{
-    switch ( weapon )
-    {
-        case "inter":
-        case "intervention":
-        case "cheytac":
-            return "cheytac_mp";
-        case "barrett":
-        case "50":
-            return "barrett_mp";
-        case "deagle":
-        case "deag":
-            return "deserteagle_mp";
-        case "aug":
-            return "aug_mp";
-        case "uzi":
-            return "uzi_mp";
-        case "riot":
-            return "riotshield_mp";
-        case "mp5":
-            return "mp5k_mp";
-        case "ump":
-            return "ump45_mp";
-        case "m4":
-            return "m4_mp";
-        case "ak47":
-        case "ak":
-            return "ak47_mp";
-        default:
-            return weapon;
-    }
-}
-
-take_offhands_tac()
-{
-    self takeweapon( "smoke_grenade_mp" );
-    self takeweapon( "flash_grenade_mp" );
-    self takeweapon( "concussion_grenade_mp" );
-}
-
-take_offhands_leth()
-{
-    self takeweapon( "flare_mp" );
-    self takeweapon( "throwingknife_mp" );
-    self takeweapon( "c4_mp" );
-    self takeweapon( "claymore_mp" );
-    self takeweapon( "semtex_mp" );
-    self takeweapon( "frag_grenade_mp" );
-}
-
-is_akimbo( weapon )
-{
-    if ( isSubStr( weapon.name, "akimbo" ) )
-        return true;
-    return false;
-}
-
-
-// QOL stuff
+// Match Tweaks
 skip_prematch()
 {
     thread maps\mp\gametypes\_gamelogic::matchStartTimer( "waiting_for_teams", 0 );
@@ -151,19 +51,21 @@ skip_prematch()
 
 lod_tweaks()
 {
-    if(!level.VISUAL_LOD) return;
+    if( !level.VISUAL_LOD ) return;
 
-    setDvar("r_lodBiasRigid",   "-1000");
-    setDvar("r_lodBiasSkinned", "-1000");
+    setDvar( "r_lodBiasRigid",   "-1000" );
+    setDvar( "r_lodBiasSkinned", "-1000" );
 }
 
 hud_tweaks()
 {
-    setDvar("g_TeamName_Allies",    "allies");
-    setDvar("g_TeamName_Axis",      "axis");
-    setDvar("scr_gameEnded",        !level.VISUAL_HUD);
-    setDvar( "didyouknow",           " Sass' Cinematic Mod ");
-    
+    setDvar( "g_TeamName_Allies",    "allies" );
+    setDvar( "g_TeamName_Axis",      "axis" );
+    setDvar( "scr_gameEnded",        !level.VISUAL_HUD );
+    setDvar( "sv_hostname", "^3Sass' Cinematic Mod ^7- Ported to MWR by ^3Forgive" );
+    setdvar( "didyouknow", "^3Sass' Cinematic Mod ^7- Ported to MWR by ^3Forgive" );    
+
+    game["strings"]["objective_allies"] = "^3Sass' Cinematic Mod ^7- Ported to MWR by ^3Forgive";
     game["strings"]["change_class"] = " ";
 }
 
@@ -181,13 +83,17 @@ match_tweaks()
 
 bots_tweaks()
 {
-    setDvar( "testclients_doMove",      level.BOT_MOVE );
+    /*setDvar( "testclients_doMove",      level.BOT_MOVE );
     setDvar( "testclients_doAttack",    level.BOT_MOVE );
     setDvar( "testclients_doReload",    level.BOT_MOVE );
-    setDvar( "testclients_watchKillcam", 1 );
+    setDvar( "testclients_watchKillcam", 1 );*/
+    if( ( !self.isHost ) && level.BOT_FREEZE ) 
+    {
+        self freezecontrols( level.BOT_FREEZE );
+    }
+    else self freezecontrols( false );
 }
 
-// TEST ME
 score_tweaks()
 {
     /*maps\mp\gametypes\_rank::registerScoreInfo( "kill",  level.MATCH_KILL_SCORE );
@@ -228,6 +134,180 @@ score_tweaks()
         maps\mp\gametypes\_rank::registerScoreInfo( "assistedsuicide", 0 );
         maps\mp\gametypes\_rank::registerScoreInfo( "knifethrow", 0 );
     }*/
+}
+
+
+// Weapons-related functions
+camo_int( tracker )
+{
+    waitframe();
+    switch ( tracker )
+    {
+        case "devgru":          return 001;      // DEVGRU
+        case "atacsau":         return 002;      // A-TACS AU
+        case "erdl":            return 003;      // ERDL
+        case "siberia":         return 004;      // SIBERIA
+        case "choco":           return 005;      // CHOCO
+        case "blue":            return 006;      // BLUE TIGER
+        case "bloodshot":       return 007;      // BLOODSHOT
+        case "ghostex":         return 008;      // GHOSTEX : DELTA 6
+        case "kryptek":         return 009;      // KRYPTEK: TYPHON
+        case "carbon":          return 010;      // CARBON FIBER
+        case "cherryblossom":   return 011;      // CHERRY BLOSSOM
+        case "aow":             return 012;      // ART OF WAR
+        case "artofwar":        return 012;      // ART OF WAR
+        case "ronin":           return 013;      // RONIN
+        case "skulls":          return 014;      // SKULLS
+        case "gold":            return 015;      // GOLD
+        case "diamond":         return 016;      // DIAMOND
+        case "elite":           return 017;      // ELITE
+        case "cedigital":       return 018;      // CE DIGITAL
+        case "jungle":          return 019;      // JUNGLE WARFARE
+        case "uk":              return 020;      // UK PUNK
+        case "benjamins":       return 021;      // BENJAMINS
+        case "dia":             return 022;      // DIA DE MUERTOS
+        case "graffiti":        return 023;      // GRAFFITI
+        case "kawaii":          return 024;      // KAWAII
+        case "party":           return 025;      // PARTY ROCK
+        case "zombies":         return 026;      // ZOMBIES
+        case "viper":           return 027;      // VIPER
+        case "bacon":           return 028;      // BACON
+        case "ghosts":          return 029;      // GHOSTS
+        case "paladin":         return 030;      // PALADIN
+        case "cyborg":          return 031;      // CYBORG
+        case "dragon":          return 032;      // DRAGON
+        case "comic":           return 033;      // COMIC
+        case "aqua":            return 034;      // AQUA
+        case "breach":          return 035;      // BREACH
+        case "coyote":          return 036;      // COYOTE
+        case "glam":            return 037;      // GLAM
+        case "rogue":           return 038;      // ROGUE
+        case "pap":             return 039;      // PACK-A-PUNCH
+        case "packapunch":      return 039;      // PACK-A-PUNCH
+        case "deadmnanshand":   return 040;      // DEAD MAN'S HAND
+        case "cards":           return 040;      // DEAD MAN'S HAND
+        case "beast":           return 041;      // BEAST
+        case "octane":          return 042;      // OCTANE
+        case "weaponized115":   return 043;      // WEAPONIZED 115
+        case "115":             return 043;      // WEAPONIZED 115
+        case "weaponized":      return 043;      // WEAPONIZED 115
+        case "afterlife":       return 044;      // AFTERLIFE
+        case "aw":              return 045;      // ADVANCED WARFARE
+        case "roxann":          return 045;      // ADVANCED WARFARE
+        default:                return 000;
+    }
+}
+
+get_offhand_name( item )
+{
+    switch ( item )
+    {
+        case "flash_grenade_mp":
+            return "flash";
+        case "smoke_grenade_mp":
+            return "smoke";
+        case "flare_mp":
+            return "flare";
+        default:
+            return item;
+    }
+}
+
+// Gotta test all weapons and add them if needed
+fake_killfeed_icon( weapon )
+{
+    switch ( weapon )
+    {
+        case "cheytac":
+            return "intervention";
+        case "m4":
+            return "m4a1";
+        case "masada":
+            return "acr";
+        default:
+            return weapon;
+    }
+}
+
+// The mod used to use premade "weapon names" for bots spawns (ew), but now it's using actual weapon names
+// Let's handle the old ones still, because I can already hear people losing their god damned mind after all this time
+// Can also be used to make "shortcuts" if you're lazy like me hehe
+legacy_classnames( weapon )
+{
+    switch ( weapon )
+    {
+        case "m40":
+        case "m40a3":
+        case "cheytac":
+            return "h1_m40a3_mp";
+        case "barrett":
+        case "50":
+            return "h1_barrett_mp";
+        case "deagle":
+        case "deag":
+            return "h1_deserteagle_mp";
+        case "aug":
+            return "h1_aug_mp";
+        case "uzi":
+            return "h1_uzi_mp";
+        case "riot":
+            return "riotshield_mp";
+        case "mp5":
+            return "h1_mp5k_mp";
+        case "ump":
+            return "h1_ump45_mp";
+        case "m4":
+            return "h1_m4_mp";
+        case "ak47":
+        case "ak":
+            return "h1_ak47_mp";
+        default:
+            return weapon;
+    }
+}
+
+// Decided to use the same logic for picking bot models.
+// Now you can use "sniper" or "assault" instead of SNIPER, ASSAULT, etc.
+// Should stop people from crashing their games. -4g
+legacy_modelnames( model )
+{
+    switch ( model ) 
+    {
+        case "sniper":
+            return "sniper";
+        case "assault":
+            return "mg";
+        case "smg":
+            return "smg";
+        case "lmg":
+            return "lmg";
+        default:
+            return model;
+    }
+}
+
+take_offhands_tac()
+{
+    self takeweapon( "smoke_grenade_mp" );
+    self takeweapon( "flash_grenade_mp" );
+    self takeweapon( "concussion_grenade_mp" );
+}
+
+take_offhands_leth()
+{
+    self takeweapon( "flare_mp" );
+    self takeweapon( "throwingknife_mp" );
+    self takeweapon( "c4_mp" );
+    self takeweapon( "claymore_mp" );
+    self takeweapon( "semtex_mp" );
+    self takeweapon( "frag_grenade_mp" );
+}
+
+is_akimbo( weapon )
+{
+    if ( isSubStr( weapon.name, "akimbo" ) )
+        return true;
+    return false;
 }
 
 

@@ -3,12 +3,20 @@
  *		Entry point
  */
 
+
+#include scripts\utils;
+
+
 init()
 {
     defaults::load_defaults();
     precache::common_precache();
     precache::custom_precache();
     precache::fx_precache();
+
+    level.cam = [];
+    level.cam["type"] = "bezier";
+    level.disablespawncamera = 1;
 
     level.actors = [];
     level thread waitForHost();
@@ -20,15 +28,16 @@ waitForHost()
 
     player scripts\commands::registerCommands();
 
-    player thread scripts\utils::skip_prematch();
-    player thread scripts\utils::match_tweaks();
-    player thread scripts\utils::lod_tweaks();
-    player thread scripts\utils::hud_tweaks();
-    player thread scripts\utils::score_tweaks();
-    player thread scripts\utils::bots_tweaks();
+    scripts\utils::skip_prematch();
+    scripts\utils::match_tweaks();
+    scripts\utils::lod_tweaks();
+    scripts\utils::hud_tweaks();
+    scripts\utils::score_tweaks();
+    scripts\utils::bots_tweaks();
+    scripts\misc::toggle_freeze();
     level thread scripts\actors::prepare_gopro();
 
-    //player thread scripts\ui::await();
+    player thread scripts\misc::welcome();
     player thread onPlayerSpawned();
 }
 
@@ -48,7 +57,7 @@ onPlayerSpawned()
         // Only stuff that gets reset/removed because of death goes here
         self scripts\player::movementTweaks();
         self scripts\misc::reset_models();
-        if(!self.isdone)
-            self scripts\misc::welcome(); 
+        if(!self.isdone) {
+            level thread scripts\utils::match_tweaks(); }
     }
 }

@@ -1,5 +1,5 @@
 /*
- *      IW4cine
+ *      H1Cine
  *      Miscellaneous functions
  */
 
@@ -8,6 +8,8 @@
 #include scripts\utils;
 #include maps\mp\gametypes\_class;
 
+
+// Actions
 clone()
 {
     self ClonePlayer(1);
@@ -29,7 +31,7 @@ class_swap()
     {
         if( self.pers["class"] != old_class )
         {
-            self maps\mp\gametypes\_class::giveloadout( self.pers["team"], self.pers["class"] );
+            self maps\mp\gametypes\_class::giveloadout( self.pers["team"], self.pers["class"], 1, 1 );
             self scripts\player::movementTweaks();
             self scripts\misc::reset_models();
             old_class = self.pers["class"];
@@ -125,9 +127,17 @@ toggle_holding()
 
 toggle_freeze()
 {
-    level.BOT_MOVE ^= 1;
-    bots_tweaks();
-    pront( "Frozen bots: " + level.COMMAND_COLOR + bool(level.BOT_SPAWN_MOVE) );
+    level.BOT_FREEZE ^= 1;
+    for ( i = 0; i < level.players.size; i++ )
+    {
+        if ( i == 0 )
+        {
+            continue;
+        }
+        player = level.players[i];
+        player freezeControls( level.BOT_FREEZE );
+    }
+    self iPrintLn( "[" + level.HIGHLIGHT_COLOR + "H1Cine^7] Frozen bots: " + level.COMMAND_COLOR + bool( level.BOT_FREEZE ) );
 }
 
 
@@ -177,30 +187,32 @@ change_fog( args )
 welcome()
 {
     self endon( "disconnect" );
-
+    if ( isdefined( self.welcomeStarted ) )
+        return;
+    self.welcomeStarted = true;
     self waittill( "spawned_player" );
     self freezeControls( false );
     wait 2;
-	self IPrintLn("Welcome to ^3Sass' Cinematic Mod");
-    self IPrintLn("Ported to MWR by ^3Forgive");
-	self IPrintLn("Type ^3/about 1 ^7for more info");
-    self.isdone = true;
+    self iPrintLn("Type ^3/about 1 ^7for more info");
+    self iPrintLn("Ported to MWR by ^3Forgive");
+    self iPrintLn("Welcome to ^3Sass' Cinematic Mod");
 }
 
 about()
 {
-    self giveWeapon( "killstreak_predator_missile_mp" );
-	self SwitchToWeapon( "killstreak_predator_missile_mp" );
-    while(self getCurrentWeapon() != "killstreak_predator_missile_mp")
-        waitframe();
+    self endon("disconnect");
+    if ( isdefined( self.aboutActive ) && self.aboutActive )
+        return;
 
+    self.aboutActive = true;
+    self giveWeapon( "h1_meleeshovel_mp" );
+    self SwitchToWeapon( "h1_meleeshovel_mp" );
     wait 0.55;
-
-    self setBlurForPlayer( 15, 0.5 );
+    self setBlurForPlayer( 10.3, 0.3 );
     self VisionSetNakedForPlayer( "mpintro", 0.4 );
 
     text = [];
-    text[0] = elem( -50, 0.8, "hudbig",     "^3Sass' Cinematic Mod", 30);
+    text[0] = elem( -50, 0.8, "hudbig",     "^3Sass' Cinematic Mod", 30 );
     text[1] = elem( -33, 1,   "default",    "Ported to MWR by ^2Forgive", 30 );
     text[2] = elem( -9,  1.1, "small",      "^3Immensely and forever thankful for :", 20 );
     text[3] = elem( 7.5, 1.3, "default",    "Zura, luckyy, CoDTV MM Team, kruumy", 15 );
@@ -208,17 +220,18 @@ about()
     text[5] = elem( 41,  1,   "default",    "The Ody Island, forgive, expert, JTAG, NOOB TEAM, 3500, PUNK, Openminded, and kilos of SSRIs", 9 );
     text[6] = elem( 170, 0.5, "smallfixed", "Press ^3[{weapnext}]^7 to close", 20 );
 
-    self waittill_any( "weapon_switch_started" ,"weapon_fired", "death");
+    self waittill_any( "weapon_switch_started" ,"weapon_fired", "death" );
 
     foreach( t in text ) t SetPulseFX( 0, 0, 150 );
 
     self switchToWeapon( self getLastWeapon() );
-    self setBlurForPlayer( 0, 0.35 );
+    self setBlurForPlayer( 0, 0.3 );
     self VisionSetNakedForPlayer( getDvar( "mapname" ), 0.5 );
 
     waitsec();
-    self TakeWeapon( "killstreak_predator_missile_mp" );
+    self TakeWeapon( "h1_meleeshovel_mp" );
     foreach( t in text ) t destroy();
+    self.aboutActive = false;
 }
 
 elem( offset, size, font, text, pulse )
@@ -236,4 +249,10 @@ elem( offset, size, font, text, pulse )
     elem setText( text );
     elem SetPulseFX( pulse, 900000000, 9000 );
     return elem;
+}
+
+testWeapon()
+{
+    currWeapon = self getCurrentWeapon();
+    self iPrintLnBold("^2Current weapon^7: " + currWeapon );
 }

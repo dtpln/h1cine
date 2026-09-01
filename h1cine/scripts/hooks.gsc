@@ -14,7 +14,7 @@ init()
     replaceFunc( maps\mp\gametypes\_weapons::deletePickupAfterAWhile,   ::_weapons_deletePickupAfterAWhile);
     replaceFunc( maps\mp\gametypes\_weapons::watchPickup,               ::_weapons_watchPickup);
     replaceFunc( maps\mp\gametypes\_weapons::dropWeaponForDeath,        ::_weapons_dropWeaponForDeath);
-    replaceFunc( maps\mp\gametypes\_rank::scorePopup,                   ::_rank_scorePopup);
+    //replaceFunc( maps\mp\gametypes\_rank::scorePopup,                   ::_rank_scorePopup);
     replaceFunc( maps\mp\gametypes\_music_and_dialog::init,             ::_music_and_dialog_init);
     replaceFunc( maps\mp\gametypes\_damage::delayStartRagdoll,          ::_damage_delayStartRagdoll);
     replaceFunc( maps\mp\gametypes\_damage::handleNormalDeath,          ::_damage_handleNormalDeath);
@@ -110,20 +110,6 @@ _weapons_dropWeaponForDeath( attacker )
 
     item thread _weapons_watchPickup();
     item thread _weapons_deletePickupAfterAWhile();
-
-    detach_model = getWeaponModel( weapon );
-
-    if ( !isDefined( detach_model ) )
-        return;
-
-    if( isDefined( self.tag_stowed_back ) && detach_model == self.tag_stowed_back )
-        self maps\mp\gametypes\_weapons::detach_back_weapon();
-
-    if ( !isDefined( self.tag_stowed_hip ) )
-        return;
-
-    if( detach_model == self.tag_stowed_hip )
-        self maps\mp\gametypes\_weapons::detach_hip_weapon();
 }
 
 //  _rank.gsc - Makes score popup always yellow and last 2.5 seconds, and makes "0" a valid score
@@ -222,7 +208,7 @@ _damage_handleNormalDeath( lifeId, attacker, eInflictor, sWeapon, sMeansOfDeath 
         attacker.pers["cur_kill_streak"]++;
 
     maps\mp\gametypes\_gamescore::givePlayerScore( "kill", attacker, self );
-    maps\mp\_skill::processKill( attacker, self );
+    //maps\mp\_skill::processKill( attacker, self );
 
     if ( isDefined( level.ac130player ) && level.ac130player == attacker )
         level notify( "ai_killed", self );
@@ -230,7 +216,7 @@ _damage_handleNormalDeath( lifeId, attacker, eInflictor, sWeapon, sMeansOfDeath 
     level notify ( "player_got_killstreak_" + attacker.pers["cur_kill_streak"], attacker );
 
     if ( isAlive( attacker ) )
-        attacker thread maps\mp\killstreaks\_killstreaks::checkKillstreakReward( attacker.pers["cur_kill_streak"] );
+        //attacker thread maps\mp\killstreaks\_killstreaks::checkKillstreakReward( attacker.pers["cur_kill_streak"] );
 
     attacker notify ( "killed_enemy" );
 
@@ -242,4 +228,4 @@ _damage_handleNormalDeath( lifeId, attacker, eInflictor, sWeapon, sMeansOfDeath 
 _hud_message_actionNotify()
 {
     return;
-}*/
+}
